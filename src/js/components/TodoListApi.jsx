@@ -17,9 +17,9 @@ const TodoListApi = () => {
                 "Content-Type": "application/json"
             },
         })
-		.then(response => response.json())  //convierte la respuesta a un formato JSON
-		.then((data) => console.log(data))  // toma los datos para mostrar en la consola
-		.catch(error => { console.log('Hubo un problema al crear el usuario: \n', error) }) //imprimir el error en la consola para depurar
+		.then(response => response.json())  
+		.then((data) => console.log(data)) 
+		.catch(error => { console.log('Hubo un problema al crear el usuario: \n', error) }) 
 
     }
 
@@ -77,18 +77,18 @@ const TodoListApi = () => {
 
     const inputText = (event) =>{
        if(event.key === "Enter"){
-            crearTarea(tarea) // llamar a la funcion de la API con el texto de la tarea
-            setTarea("") //limpia el campo despues de enviar la tarea 
-        }
+            crearTarea(tarea) 
+            setTarea("")
+       } 
+    
     }
 
 
 
 
+
     useEffect(() => {
-        //onload
-        // crearUsuario()
-        traerLista()
+       traerLista()
     }, [])
 
 
