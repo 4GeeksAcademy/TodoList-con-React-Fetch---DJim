@@ -35,7 +35,7 @@ const TodoListApi = () => {
                 }
 
 
-                // console.log(response)
+                
                 return response.json()
             })
 
@@ -47,7 +47,7 @@ const TodoListApi = () => {
 
     const crearTarea = async (text) => {
         try {
-            const response = await fetch(API_URL + "todos/alexis", {
+            const response = await fetch(API_URL + "todos/david", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -63,7 +63,7 @@ const TodoListApi = () => {
             }
 
             const data= await response.json()
-            console.log("tarea creada con exito:", data);
+            console.log("Tarea Creada Con Éxito:", data);
             await traerLista()
 
 
@@ -75,13 +75,33 @@ const TodoListApi = () => {
 
 
 
-    const inputText = (event) =>{
-       if(event.key === "Enter"){
+    const agregarALista = (event) =>{
+       if(event.key === "Enter" && tarea !== '')
+        {
             crearTarea(tarea) 
             setTarea("")
        } 
     
     }
+
+    const eliminarTarea = async (id) => {
+
+        await fetch(API_URL + "todos/david" + `/${id}`, {
+            method: 'DELETE'
+    }).then((response) => {
+
+        if (!response.error){
+            setLista (lista.filter((index)=>index!==id))
+        }          
+    })
+            const data = await response.json()
+            console.log("Tarea Eliminada Con Éxito:", data);
+            
+       
+        }).catch(err) => {
+        console.log (err)
+    }
+    
 
 
 
@@ -103,15 +123,14 @@ const TodoListApi = () => {
 	<div className="container"> 
 				
 				<h1 className="text-center"> TodoList </h1>    
-			    <input type="text" placeholder="Que tarea desea agregar?" value={tarea} onChange={(e) => setTarea(e.target.value)} onKeyDown={inputText}/>
+			    <input type="text" placeholder="Que tarea desea agregar?" value={tarea} onChange={(e) => setTarea(e.target.value)} onKeyDown={agregarALista}/>
 			
         <div>
 					
                 <ul>
                     {lista.map((item) =>(
                         <li key={item.id}>
-                            {item.label}
-                        </li>    
+                            {item.label}<span onClick={()=>eliminarTarea(item.id)}>❌</span></li>    
                     ))}
 
 				</ul>
