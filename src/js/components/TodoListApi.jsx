@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"; 
+import React, { useState, useEffect } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 
 const TodoListApi = () => {
@@ -17,9 +17,9 @@ const TodoListApi = () => {
                 "Content-Type": "application/json"
             },
         })
-		.then(response => response.json())  
-		.then((data) => console.log(data)) 
-		.catch(error => { console.log('Hubo un problema al crear el usuario: \n', error) }) 
+            .then(response => response.json())
+            .then((data) => console.log(data))
+            .catch(error => { console.log('Hubo un problema al crear el usuario: \n', error) })
 
     }
 
@@ -35,7 +35,7 @@ const TodoListApi = () => {
                 }
 
 
-                
+
                 return response.json()
             })
 
@@ -52,101 +52,104 @@ const TodoListApi = () => {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body : JSON.stringify({
+                body: JSON.stringify({
                     label: text,
                     is_done: false
                 })
             })
-              
-            if (!response.ok){
-                throw new Error (`Error ${response.status}: No se pudo crear la tarea.`);
+
+            if (!response.ok) {
+                throw new Error(`Error ${response.status}: No se pudo crear la tarea.`);
             }
 
-            const data= await response.json()
+            const data = await response.json()
             console.log("Tarea Creada Con Éxito:", data);
             await traerLista()
 
 
         } catch (error) {
-                console.error('hubo un problema al crear la tarea:', error)
+            console.error('hubo un problema al crear la tarea:', error)
         }
 
     }
 
 
 
-    const agregarALista = (event) =>{
-       if(event.key === "Enter" && tarea !== '')
-        {
-            crearTarea(tarea) 
+    const agregarALista = (event) => {
+        if (event.key === "Enter" && tarea !== '') {
+            crearTarea(tarea)
             setTarea("")
-       } 
-    
+        }
+
     }
 
     const eliminarTarea = async (id) => {
-
-        await fetch(API_URL + "todos/david" + `/${id}`, {
+        try {
+        const response = await fetch(API_URL + "todos" + `/${id}`, {
             method: 'DELETE'
-    }).then((response) => {
+        })
 
-        if (!response.error){
-            setLista (lista.filter((index)=>index!==id))
-        }          
-    })
-            const data = await response.json()
-            console.log("Tarea Eliminada Con Éxito:", data);
-            
-       
-        }).catch(err) => {
-        console.log (err)
+        if (response.ok) {
+            alert('Tarea Eliminada');
+            traerLista()
+        }
+
     }
-    
 
 
+    catch (err)  {
+    console.log(err)
+  }
 
-
-
-    useEffect(() => {
-       traerLista()
-    }, [])
+}
 
 
 
 
 
 
+useEffect(() => {
+    traerLista()
+}, [])
 
-	return (
-		
 
-	<div className="container"> 
-				
-				<h1 className="text-center"> TodoList </h1>    
-			    <input type="text" placeholder="Que tarea desea agregar?" value={tarea} onChange={(e) => setTarea(e.target.value)} onKeyDown={agregarALista}/>
-			
+
+
+
+
+
+return (
+
+
+    <div className="container">
+
+        <h1 className="text-center"> TodoList </h1>
+        <input type="text" placeholder="Que tarea desea agregar?" value={tarea} onChange={(e) => setTarea(e.target.value)} onKeyDown={agregarALista} />
+
         <div>
-					
-                <ul>
-                    {lista.map((item) =>(
-                        <li key={item.id}>
-                            {item.label}<span onClick={()=>eliminarTarea(item.id)}>❌</span></li>    
-                    ))}
 
-				</ul>
+            <ul>
+                {lista.map((item) => (
+                    <li key={item.id}>
+                        {item.label}<span role="button" onClick={() => eliminarTarea(item.id)}>❌</span></li>
+                ))}
 
-		</div>
-			
-			
+            </ul>
 
-			 
+        </div>
 
-	</div>
-	
+        <p className="paper">{lista.length} item left</p>
 
-			
-		
-	);
+
+
+
+
+    </div>
+
+
+
+
+);
 };
 
 export default TodoListApi;
